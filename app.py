@@ -16,7 +16,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 
-# Ensure necessary NLTK datasets are downloaded silently on startup
+# Silent download of NLTK dependencies for cloud deployment
 nltk.download('stopwords', quiet=True)
 nltk.download('wordnet', quiet=True)
 nltk.download('omw-1.4', quiet=True)
@@ -70,7 +70,7 @@ if 'admin_auth' not in st.session_state:
     st.session_state.admin_auth = False
 
 # --- TOP CONTROLS (LIGHT/DARK MODE & ADMIN) ---
-col_spacer, col_theme, col_admin = st.columns([7.5, 1.5, 1.5])
+col_spacer, col_theme, col_admin = st.columns([7.2, 1.5, 1.3])
 
 with col_theme:
     light_mode = st.toggle("Light Mode")
@@ -90,24 +90,24 @@ with col_admin:
             elif pwd != "":
                 st.error("Incorrect Password")
 
-# --- DYNAMIC THEME CSS ---
+# --- DYNAMIC THEME CSS DEFINITIONS ---
 if light_mode:
     theme_css = """
     :root {
         --bg-color: #F8FAFC;
         --text-color: #000000;
-        --sub-text: #1E293B;
+        --sub-text: #000000;
         --card-bg: #FFFFFF;
-        --border-color: #CBD5E1;
+        --border-color: #94A3B8;
         --input-bg: #FFFFFF;
         --input-text: #000000;
-        --orb-color: rgba(255, 107, 26, 0.55);
-        --stream-color: rgba(255, 107, 26, 0.85);
-        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+        --orb-color: rgba(255, 107, 26, 0.45);
+        --stream-color: rgba(255, 107, 26, 0.75);
+        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     """
     chart_font_color = "#000000"
-    chart_sub_color = "#1E293B"
+    chart_sub_color = "#000000"
 else:
     theme_css = """
     :root {
@@ -126,7 +126,7 @@ else:
     chart_font_color = "#FFFFFF"
     chart_sub_color = "#94A3B8"
 
-# --- CUSTOM CSS & ANIMATIONS ---
+# --- GLOBAL STYLING INJECTION ---
 st.markdown(f"""
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -135,34 +135,68 @@ st.markdown(f"""
     <style>
     {theme_css}
     
-    html, body, [class*="css"], .stMarkdown p, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown span {{
+    /* 1. AGGRESSIVE TEXT COLOR ENFORCEMENT */
+    html, body, [class*="css"], .stMarkdown, .stMarkdown *, p, span, h1, h2, h3, h4, h5, h6, label, div {{
         font-family: 'Plus Jakarta Sans', sans-serif !important;
-        color: var(--text-color) !important;
-        font-weight: 600 !important;
     }}
-    
+
     .stApp {{
-        background-color: var(--bg-color);
+        background-color: var(--bg-color) !important;
+        color: var(--text-color) !important;
         overflow-x: hidden;
     }}
 
     header {{ visibility: hidden; }}
 
-    /* HERO BANNER */
+    /* 2. TOGGLE WIDGET LABEL FIX */
+    div[data-testid="stToggle"] label, 
+    div[data-testid="stToggle"] span, 
+    div[data-testid="stToggle"] p {{
+        color: var(--text-color) !important;
+        font-weight: 800 !important;
+        font-size: 0.95rem !important;
+        opacity: 1 !important;
+    }}
+
+    /* 3. TABS HEADERS VISIBILITY FIX */
+    button[data-baseweb="tab"] {{
+        background: transparent !important;
+    }}
+    
+    button[data-baseweb="tab"] * {{
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-weight: 800 !important;
+        font-size: 1.15rem !important;
+        letter-spacing: 0.05em !important;
+        text-transform: uppercase !important;
+        color: var(--text-color) !important;
+        opacity: 1 !important;
+    }}
+
+    button[data-baseweb="tab"][aria-selected="true"] * {{
+        color: #FF6B1A !important;
+    }}
+
+    div[data-baseweb="tab-highlight"] {{
+        background-color: #FF6B1A !important;
+        height: 3px !important;
+    }}
+
+    /* 4. HERO BANNER */
     .hero-banner-container {{
         position: relative;
         width: 100%;
-        height: 240px;
-        background: linear-gradient(180deg, #FF6B1A 0%, #D94E10 40%, var(--bg-color) 100%);
+        height: 230px;
+        background: linear-gradient(180deg, #FF6B1A 0%, #D94E10 45%, var(--bg-color) 100%);
         border-radius: 20px;
-        margin-top: 10px;
+        margin-top: 5px;
         margin-bottom: 25px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         box-shadow: var(--card-shadow);
     }}
 
@@ -186,7 +220,7 @@ st.markdown(f"""
         letter-spacing: -0.02em;
         text-align: center;
         line-height: 1;
-        text-shadow: 0 4px 10px rgba(0,0,0,0.25);
+        text-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }}
 
     .hero-banner-subtitle {{
@@ -195,31 +229,15 @@ st.markdown(f"""
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 1.05rem;
         font-weight: 700;
-        color: rgba(255,255,255,0.95) !important;
+        color: #FFFFFF !important;
         text-transform: uppercase;
         letter-spacing: 0.1em;
-        margin-top: 10px;
+        margin-top: 8px;
         text-align: center;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }}
 
-    /* UI LAYERING & TAB FIXES */
-    .stTextArea, .stButton, div[data-baseweb="tab-list"], div[data-testid="stVerticalBlock"] {{
-        position: relative !important;
-        z-index: 99 !important;
-    }}
-
-    button[data-baseweb="tab"] p {{
-        font-family: 'Space Grotesk', sans-serif !important;
-        font-weight: 800 !important;
-        font-size: 1.15rem !important;
-        letter-spacing: 0.05em !important;
-        text-transform: uppercase !important;
-        color: var(--sub-text) !important;
-    }}
-    button[data-baseweb="tab"][aria-selected="true"] p {{
-        color: var(--text-color) !important;
-    }}
-
+    /* 5. INPUT TEXT AREA & BUTTON */
     .main .block-container {{
         max-width: 950px;
         padding-top: 1rem !important;
@@ -228,90 +246,6 @@ st.markdown(f"""
         margin: 0 auto;
     }}
 
-    /* BACKGROUND STREAMS AND ORB */
-    .bg-streams {{
-        position: fixed;
-        bottom: 0; left: 0; right: 0;
-        height: 75vh;
-        background: linear-gradient(to top, var(--stream-color) 0%, rgba(255, 107, 26, 0.0) 80%);
-        -webkit-mask-image: repeating-linear-gradient(90deg, black 0%, black 9.8%, transparent 9.8%, transparent 10%);
-        pointer-events: none;
-        z-index: 0 !important; 
-    }}
-    
-    .bg-orb {{
-        position: fixed;
-        bottom: -15%; left: 50%;
-        transform: translateX(-50%);
-        width: 800px; height: 800px;
-        background: radial-gradient(circle, var(--orb-color) 0%, transparent 65%);
-        pointer-events: none;
-        z-index: 0 !important;
-    }}
-
-    /* 3D FLOATING CARDS - ANCHORED STRICTLY TO SIDES (NO OVERLAP) */
-    .space-container {{
-        position: fixed;
-        top: 0; left: 0;
-        width: 100vw; height: 100vh;
-        pointer-events: none;
-        z-index: 1 !important;
-        overflow: hidden;
-    }}
-
-    .floating-card {{
-        position: absolute;
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 0.72rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        background: var(--card-bg);
-        border: 1.5px solid var(--border-color);
-        color: var(--text-color) !important;
-        padding: 4px 10px;
-        border-radius: 6px;
-        box-shadow: var(--card-shadow);
-        animation: zoomForward linear infinite;
-        opacity: 0;
-    }}
-
-    @keyframes zoomForward {{
-        0% {{ transform: scale(0.4) translateY(30px); opacity: 0; }}
-        20% {{ opacity: 0.7; }}
-        80% {{ opacity: 0.7; }}
-        100% {{ transform: scale(1.1) translateY(-30px); opacity: 0; }}
-    }}
-
-    /* Positioned entirely outside the center content column */
-    .fc-1 {{ top: 22%; left: 2%; animation-duration: 16s; animation-delay: 0s; }}
-    .fc-2 {{ top: 48%; left: 2.5%; animation-duration: 18s; animation-delay: 5s; }}
-    .fc-3 {{ top: 76%; left: 3%; animation-duration: 20s; animation-delay: 9s; }}
-    .fc-4 {{ top: 28%; right: 2%; animation-duration: 17s; animation-delay: 2s; }}
-    .fc-5 {{ top: 56%; right: 2.5%; animation-duration: 19s; animation-delay: 7s; }}
-    .fc-6 {{ top: 82%; right: 3%; animation-duration: 21s; animation-delay: 11s; }}
-
-    .tag-real {{
-        color: #10B981;
-        border: 1px solid rgba(16, 185, 129, 0.5);
-        background: rgba(16, 185, 129, 0.1);
-        padding: 1px 4px;
-        border-radius: 3px;
-        margin-left: 6px;
-        font-size: 0.65rem;
-    }}
-    
-    .tag-fake {{
-        color: #EF4444;
-        border: 1px solid rgba(239, 68, 68, 0.5);
-        background: rgba(239, 68, 68, 0.1);
-        padding: 1px 4px;
-        border-radius: 3px;
-        margin-left: 6px;
-        font-size: 0.65rem;
-    }}
-
-    /* CRISP INPUTS & BUTTONS */
     .stTextArea label {{ display: none; }}
     .stTextArea textarea {{
         background-color: var(--input-bg) !important;
@@ -323,11 +257,10 @@ st.markdown(f"""
         padding: 1.5rem !important;
         text-align: center;
         box-shadow: var(--card-shadow);
-        transition: all 0.2s ease;
     }}
     .stTextArea textarea::placeholder {{
         color: var(--sub-text) !important;
-        opacity: 0.85;
+        opacity: 0.75;
         font-weight: 600;
     }}
     .stTextArea textarea:focus {{
@@ -353,7 +286,7 @@ st.markdown(f"""
         opacity: 0.9;
     }}
 
-    /* METRIC CARDS & CHART BOXES */
+    /* 6. METRIC CARDS & CHART CONTAINERS */
     .glass-card {{
         background: var(--card-bg);
         border: 2px solid var(--border-color);
@@ -363,7 +296,7 @@ st.markdown(f"""
         box-shadow: var(--card-shadow);
     }}
     .glass-label {{
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         color: var(--sub-text) !important;
         text-transform: uppercase;
         margin-bottom: 8px;
@@ -371,7 +304,7 @@ st.markdown(f"""
         letter-spacing: 0.05em;
     }}
     .glass-val {{
-        font-size: 2.4rem;
+        font-size: 2.5rem;
         font-weight: 800;
         color: var(--text-color) !important;
     }}
@@ -383,12 +316,93 @@ st.markdown(f"""
         padding: 15px;
         box-shadow: var(--card-shadow);
     }}
+
+    /* 7. BACKGROUND STREAM EFFECT */
+    .bg-streams {{
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        height: 75vh;
+        background: linear-gradient(to top, var(--stream-color) 0%, rgba(255, 107, 26, 0.0) 80%);
+        -webkit-mask-image: repeating-linear-gradient(90deg, black 0%, black 9.8%, transparent 9.8%, transparent 10%);
+        pointer-events: none;
+        z-index: 0 !important; 
+    }}
+    
+    .bg-orb {{
+        position: fixed;
+        bottom: -15%; left: 50%;
+        transform: translateX(-50%);
+        width: 800px; height: 800px;
+        background: radial-gradient(circle, var(--orb-color) 0%, transparent 65%);
+        pointer-events: none;
+        z-index: 0 !important;
+    }}
+
+    /* 8. SIDE-DRIFTING ANIMATIONS */
+    .space-container {{
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        pointer-events: none;
+        z-index: 1 !important;
+        overflow: hidden;
+    }}
+
+    .floating-card {{
+        position: absolute;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        color: var(--text-color) !important;
+        padding: 5px 10px;
+        border-radius: 6px;
+        box-shadow: var(--card-shadow);
+        animation: zoomForward linear infinite;
+        opacity: 0;
+    }}
+
+    @keyframes zoomForward {{
+        0% {{ transform: scale(0.4) translateY(30px); opacity: 0; }}
+        20% {{ opacity: 0.85; }}
+        80% {{ opacity: 0.85; }}
+        100% {{ transform: scale(1.1) translateY(-30px); opacity: 0; }}
+    }}
+
+    .fc-1 {{ top: 22%; left: 2%; animation-duration: 16s; animation-delay: 0s; }}
+    .fc-2 {{ top: 48%; left: 2.5%; animation-duration: 18s; animation-delay: 5s; }}
+    .fc-3 {{ top: 76%; left: 3%; animation-duration: 20s; animation-delay: 9s; }}
+    .fc-4 {{ top: 28%; right: 2%; animation-duration: 17s; animation-delay: 2s; }}
+    .fc-5 {{ top: 56%; right: 2.5%; animation-duration: 19s; animation-delay: 7s; }}
+    .fc-6 {{ top: 82%; right: 3%; animation-duration: 21s; animation-delay: 11s; }}
+
+    .tag-real {{
+        color: #10B981;
+        border: 1px solid rgba(16, 185, 129, 0.6);
+        background: rgba(16, 185, 129, 0.12);
+        padding: 1px 4px;
+        border-radius: 3px;
+        margin-left: 6px;
+        font-size: 0.65rem;
+    }}
+    
+    .tag-fake {{
+        color: #EF4444;
+        border: 1px solid rgba(239, 68, 68, 0.6);
+        background: rgba(239, 68, 68, 0.12);
+        padding: 1px 4px;
+        border-radius: 3px;
+        margin-left: 6px;
+        font-size: 0.65rem;
+    }}
     </style>
 
     <div class="bg-streams"></div>
     <div class="bg-orb"></div>
     
-    <!-- Floating Animation Elements on outer edges -->
     <div class="space-container">
         <div class="floating-card fc-1">FEDERAL RESERVE SIGNALS RATE CUTS <span class="tag-real">REAL</span></div>
         <div class="floating-card fc-2">G20 DRAFTS JOINT SUPPLY CHAIN RESOLUTION <span class="tag-real">REAL</span></div>
@@ -398,7 +412,6 @@ st.markdown(f"""
         <div class="floating-card fc-6">ELECTION COMMISSION THROWS OUT 500K BALLOTS <span class="tag-fake">FAKE</span></div>
     </div>
 
-    <!-- HERO BANNER -->
     <div class="hero-banner-container">
         <div class="hero-banner-text">FAKE NEWS DETECTOR</div>
         <div class="hero-banner-subtitle">Automated Fact-Checking & Misinformation Detection Engine</div>
@@ -434,7 +447,7 @@ tab_verify, tab_export, tab_admin = st.tabs(["VERIFICATION", "EXPORT OPTION", "A
 # --- TAB 1: VERIFICATION DASHBOARD ---
 with tab_verify:
     if model is None:
-        st.error("Trained pipeline file `fake_news_pipeline.pkl` was not found. Please ensure the model file is in your repository.")
+        st.error("Trained pipeline file `fake_news_pipeline.pkl` was not found. Please ensure the model file is present in your repository.")
     else:
         user_input = st.text_area("Hidden", height=140, placeholder="Paste a URL or news article text here to verify...")
         st.markdown("<br>", unsafe_allow_html=True)
@@ -515,7 +528,7 @@ with tab_verify:
                                 'axis': {'range': [0, 100], 'tickwidth': 3, 'tickcolor': chart_font_color, 'tickfont': {'family': 'Plus Jakarta Sans, sans-serif', 'color': chart_font_color}},
                                 'bar': {'color': "#10B981" if is_real else "#EF4444"},
                                 'bgcolor': "rgba(0,0,0,0.05)" if light_mode else "rgba(255,255,255,0.05)", 'borderwidth': 0,
-                                'steps': [{'range': [0, 50], 'color': "rgba(239, 68, 68, 0.15)"}, {'range': [50, 100], 'color': "rgba(16, 185, 129, 0.15)"}],
+                                'steps': [{'range': [0, 50], 'color': "rgba(239, 68, 68, 0.18)"}, {'range': [50, 100], 'color': "rgba(16, 185, 129, 0.18)"}],
                             }
                         ))
                         fig_gauge.update_layout(
@@ -546,7 +559,7 @@ with tab_verify:
                                     height=320, margin=dict(l=20, r=20, t=60, b=20), 
                                     paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", 
                                     yaxis=dict(autorange="reversed", title="", color=chart_font_color, tickfont=dict(family='Plus Jakarta Sans, sans-serif', color=chart_font_color, size=14)), 
-                                    xaxis=dict(title="", color=chart_font_color, gridcolor="rgba(128,128,128,0.2)", tickfont=dict(family='Plus Jakarta Sans, sans-serif', color=chart_font_color, size=13)), 
+                                    xaxis=dict(title="", color=chart_font_color, gridcolor="rgba(148, 163, 184, 0.3)", tickfont=dict(family='Plus Jakarta Sans, sans-serif', color=chart_font_color, size=13)), 
                                     font=dict(family='Plus Jakarta Sans, sans-serif', color=chart_font_color, size=15, weight="bold"), 
                                     showlegend=False
                                 )
