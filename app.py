@@ -87,58 +87,54 @@ with col_admin:
             elif pwd != "":
                 st.error("Incorrect Password")
 
-# --- DARK THEME CSS ---
-theme_css = """
-:root {
-    --bg-color: #050505;
-    --text-color: #FFFFFF;
-    --sub-text: #94A3B8;
-    --card-bg: rgba(15, 15, 18, 0.85);
-    --border-color: rgba(255, 255, 255, 0.2);
-    --input-bg: rgba(0, 0, 0, 0.75);
-    --input-text: #FFFFFF;
-    --orb-color: rgba(255, 107, 26, 0.55);
-    --stream-color: rgba(255, 107, 26, 0.85);
-    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
-}
-"""
 chart_font_color = "#FFFFFF"
 chart_sub_color = "#94A3B8"
 
-# --- GLOBAL STYLING INJECTION ---
-st.markdown(f"""
+# --- GLOBAL STYLING INJECTION (NO F-STRING TO PREVENT RENDER ERRORS) ---
+st.markdown("""
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
     
     <style>
-    {theme_css}
+    :root {
+        --bg-color: #050505;
+        --text-color: #FFFFFF;
+        --sub-text: #94A3B8;
+        --card-bg: rgba(15, 15, 18, 0.85);
+        --border-color: rgba(255, 255, 255, 0.2);
+        --input-bg: rgba(0, 0, 0, 0.75);
+        --input-text: #FFFFFF;
+        --orb-color: rgba(255, 107, 26, 0.55);
+        --stream-color: rgba(255, 107, 26, 0.85);
+        --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+    }
     
-    /* FIX: Targeted font replacement so it doesn't break Streamlit Icons */
-    html, body, .stMarkdown, p, h1, h2, h3, h4, h5, h6, label {{
+    /* Targeted font replacement so it doesn't break Streamlit Icons */
+    html, body, .stMarkdown, p, h1, h2, h3, h4, h5, h6, label {
         font-family: 'Plus Jakarta Sans', sans-serif !important;
-    }}
+    }
 
-    .stApp {{
+    .stApp {
         background-color: var(--bg-color) !important;
         color: var(--text-color) !important;
         overflow-x: hidden;
-    }}
+    }
 
-    header {{ visibility: hidden; }}
+    header { visibility: hidden; }
 
     /* ADMIN POPOVER BUTTON */
-    div[data-testid="stPopover"] > button {{
+    div[data-testid="stPopover"] > button {
         background-color: var(--card-bg) !important;
         color: var(--text-color) !important;
         border: 1px solid var(--border-color) !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-weight: 700 !important;
         border-radius: 8px !important;
-    }}
+    }
 
     /* TABS HEADERS */
-    button[data-baseweb="tab"] p {{
+    button[data-baseweb="tab"] p {
         font-family: 'Space Grotesk', sans-serif !important;
         font-weight: 800 !important;
         font-size: 1.15rem !important;
@@ -146,19 +142,19 @@ st.markdown(f"""
         text-transform: uppercase !important;
         color: var(--text-color) !important;
         opacity: 0.6 !important;
-    }}
+    }
 
-    button[data-baseweb="tab"][aria-selected="true"] p {{
+    button[data-baseweb="tab"][aria-selected="true"] p {
         color: #FF6B1A !important;
         opacity: 1 !important;
-    }}
-    div[data-baseweb="tab-highlight"] {{
+    }
+    div[data-baseweb="tab-highlight"] {
         background-color: #FF6B1A !important;
         height: 3px !important;
-    }}
+    }
 
     /* HERO BANNER */
-    .hero-banner-container {{
+    .hero-banner-container {
         position: relative;
         width: 100%;
         height: 230px;
@@ -173,18 +169,18 @@ st.markdown(f"""
         justify-content: center;
         border: 1px solid rgba(255, 255, 255, 0.15);
         box-shadow: var(--card-shadow);
-    }}
+    }
 
-    .hero-banner-container::before {{
+    .hero-banner-container::before {
         content: '';
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
         background: repeating-linear-gradient(90deg, transparent, transparent 19.8%, rgba(0, 0, 0, 0.15) 20%);
         pointer-events: none;
         z-index: 1;
-    }}
+    }
 
-    .hero-banner-text {{
+    .hero-banner-text {
         position: relative;
         z-index: 2;
         font-family: 'Space Grotesk', sans-serif !important;
@@ -196,9 +192,9 @@ st.markdown(f"""
         text-align: center;
         line-height: 1;
         text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }}
+    }
 
-    .hero-banner-subtitle {{
+    .hero-banner-subtitle {
         position: relative;
         z-index: 2;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
@@ -210,29 +206,29 @@ st.markdown(f"""
         margin-top: 8px;
         text-align: center;
         text-shadow: 0 2px 6px rgba(0,0,0,0.25);
-    }}
+    }
 
     /* UI LAYERING */
-    .main .block-container {{
+    .main .block-container {
         max-width: 950px;
         padding-top: 1rem !important;
         position: relative;
         z-index: 10 !important;
         margin: 0 auto;
-    }}
+    }
 
     div[data-testid="stVerticalBlock"], 
     div[data-testid="stDataFrame"], 
     .stDataFrame,
     .stTextArea, 
-    .stButton {{
+    .stButton {
         position: relative !important;
         z-index: 999 !important;
-    }}
+    }
 
     /* INPUT TEXT AREA & BUTTON */
-    .stTextArea label {{ display: none; }}
-    .stTextArea textarea {{
+    .stTextArea label { display: none; }
+    .stTextArea textarea {
         background-color: var(--input-bg) !important;
         color: var(--input-text) !important;
         border: 2px solid var(--border-color) !important;
@@ -242,18 +238,18 @@ st.markdown(f"""
         padding: 1.5rem !important;
         text-align: center;
         box-shadow: var(--card-shadow);
-    }}
-    .stTextArea textarea::placeholder {{
+    }
+    .stTextArea textarea::placeholder {
         color: var(--sub-text) !important;
         opacity: 0.75;
         font-weight: 600;
-    }}
-    .stTextArea textarea:focus {{
+    }
+    .stTextArea textarea:focus {
         border-color: #FF6B1A !important;
         outline: none;
-    }}
+    }
 
-    .stButton > button {{
+    .stButton > button {
         background: var(--text-color) !important;
         color: var(--bg-color) !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
@@ -266,45 +262,45 @@ st.markdown(f"""
         display: block !important;
         transition: all 0.2s ease !important;
         box-shadow: var(--card-shadow);
-    }}
-    .stButton > button:hover {{
+    }
+    .stButton > button:hover {
         transform: translateY(-2px);
         opacity: 0.9;
-    }}
+    }
 
     /* METRIC CARDS & CHART CONTAINERS */
-    .glass-card {{
+    .glass-card {
         background: var(--card-bg);
         border: 2px solid var(--border-color);
         border-radius: 12px;
         padding: 24px;
         text-align: center;
         box-shadow: var(--card-shadow);
-    }}
-    .glass-label {{
+    }
+    .glass-label {
         font-size: 0.85rem;
         color: var(--sub-text) !important;
         text-transform: uppercase;
         margin-bottom: 8px;
         font-weight: 800;
         letter-spacing: 0.05em;
-    }}
-    .glass-val {{
+    }
+    .glass-val {
         font-size: 2.5rem;
         font-weight: 800;
         color: var(--text-color) !important;
-    }}
+    }
 
-    div[data-testid="stPlotlyChart"] {{
+    div[data-testid="stPlotlyChart"] {
         background-color: var(--card-bg);
         border: 2px solid var(--border-color);
         border-radius: 12px;
         padding: 15px;
         box-shadow: var(--card-shadow);
-    }}
+    }
 
     /* BACKGROUND STREAM EFFECT */
-    .bg-streams {{
+    .bg-streams {
         position: fixed;
         bottom: 0; left: 0; right: 0;
         height: 75vh;
@@ -312,9 +308,9 @@ st.markdown(f"""
         -webkit-mask-image: repeating-linear-gradient(90deg, black 0%, black 9.8%, transparent 9.8%, transparent 10%);
         pointer-events: none;
         z-index: 0 !important; 
-    }}
+    }
     
-    .bg-orb {{
+    .bg-orb {
         position: fixed;
         bottom: -15%; left: 50%;
         transform: translateX(-50%);
@@ -322,19 +318,19 @@ st.markdown(f"""
         background: radial-gradient(circle, var(--orb-color) 0%, transparent 65%);
         pointer-events: none;
         z-index: 0 !important;
-    }}
+    }
 
     /* SIDE-DRIFTING ANIMATIONS LOCKED TO BACKGROUND Z-INDEX 1 */
-    .space-container {{
+    .space-container {
         position: fixed;
         top: 0; left: 0;
         width: 100vw; height: 100vh;
         pointer-events: none;
         z-index: 1 !important;
         overflow: hidden;
-    }}
+    }
 
-    .floating-card {{
+    .floating-card {
         position: absolute;
         font-family: 'Space Grotesk', sans-serif;
         font-size: 0.72rem;
@@ -349,33 +345,33 @@ st.markdown(f"""
         box-shadow: var(--card-shadow);
         animation: zoomForward linear infinite;
         opacity: 0;
-    }}
+    }
 
-    @keyframes zoomForward {{
-        0% {{ transform: scale(0.4) translateY(30px); opacity: 0; }}
-        20% {{ opacity: 0.85; }}
-        80% {{ opacity: 0.85; }}
-        100% {{ transform: scale(1.1) translateY(-30px); opacity: 0; }}
-    }}
+    @keyframes zoomForward {
+        0% { transform: scale(0.4) translateY(30px); opacity: 0; }
+        20% { opacity: 0.85; }
+        80% { opacity: 0.85; }
+        100% { transform: scale(1.1) translateY(-30px); opacity: 0; }
+    }
 
-    .fc-1 {{ top: 22%; left: 2%; animation-duration: 16s; animation-delay: 0s; }}
-    .fc-2 {{ top: 48%; left: 2.5%; animation-duration: 18s; animation-delay: 5s; }}
-    .fc-3 {{ top: 76%; left: 3%; animation-duration: 20s; animation-delay: 9s; }}
-    .fc-4 {{ top: 28%; right: 2%; animation-duration: 17s; animation-delay: 2s; }}
-    .fc-5 {{ top: 56%; right: 2.5%; animation-duration: 19s; animation-delay: 7s; }}
-    .fc-6 {{ top: 82%; right: 3%; animation-duration: 21s; animation-delay: 11s; }}
+    .fc-1 { top: 22%; left: 2%; animation-duration: 16s; animation-delay: 0s; }
+    .fc-2 { top: 48%; left: 2.5%; animation-duration: 18s; animation-delay: 5s; }
+    .fc-3 { top: 76%; left: 3%; animation-duration: 20s; animation-delay: 9s; }
+    .fc-4 { top: 28%; right: 2%; animation-duration: 17s; animation-delay: 2s; }
+    .fc-5 { top: 56%; right: 2.5%; animation-duration: 19s; animation-delay: 7s; }
+    .fc-6 { top: 82%; right: 3%; animation-duration: 21s; animation-delay: 11s; }
 
-    .tag-real {{
+    .tag-real {
         color: #10B981; border: 1px solid rgba(16, 185, 129, 0.6);
         background: rgba(16, 185, 129, 0.12); padding: 1px 4px;
         border-radius: 3px; margin-left: 6px; font-size: 0.65rem;
-    }}
+    }
     
-    .tag-fake {{
+    .tag-fake {
         color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.6);
         background: rgba(239, 68, 68, 0.12); padding: 1px 4px;
         border-radius: 3px; margin-left: 6px; font-size: 0.65rem;
-    }}
+    }
     </style>
 
     <div class="bg-streams"></div>
