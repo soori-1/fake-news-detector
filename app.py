@@ -16,6 +16,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 
+# --- ADD THESE 3 LINES RIGHT HERE ---
+nltk.download('stopwords', quiet=True)
+nltk.download('wordnet', quiet=True)
+nltk.download('omw-1.4', quiet=True)
+# ------------------------------------
+
 # Page configuration
 st.set_page_config(
     page_title="Fake News Detection System",
