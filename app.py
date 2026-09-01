@@ -16,7 +16,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 
-# Silent download of NLTK dependencies for cloud deployment
+# Silent download of NLTK dependencies
 nltk.download('stopwords', quiet=True)
 nltk.download('wordnet', quiet=True)
 nltk.download('omw-1.4', quiet=True)
@@ -70,7 +70,8 @@ if 'admin_auth' not in st.session_state:
     st.session_state.admin_auth = False
 
 # --- TOP CONTROLS (LIGHT/DARK MODE & ADMIN) ---
-col_spacer, col_theme, col_admin = st.columns([7.2, 1.5, 1.3])
+# Properly placed in standard columns at the top right so they don't break layout
+col_spacer, col_theme, col_admin = st.columns([7.5, 1.5, 1.5])
 
 with col_theme:
     light_mode = st.toggle("Light Mode")
@@ -98,12 +99,12 @@ if light_mode:
         --text-color: #000000;
         --sub-text: #000000;
         --card-bg: #FFFFFF;
-        --border-color: #94A3B8;
+        --border-color: #000000;
         --input-bg: #FFFFFF;
         --input-text: #000000;
         --orb-color: rgba(255, 107, 26, 0.45);
         --stream-color: rgba(255, 107, 26, 0.75);
-        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     """
     chart_font_color = "#000000"
@@ -115,7 +116,7 @@ else:
         --text-color: #FFFFFF;
         --sub-text: #94A3B8;
         --card-bg: rgba(15, 15, 18, 0.85);
-        --border-color: rgba(255, 255, 255, 0.15);
+        --border-color: rgba(255, 255, 255, 0.2);
         --input-bg: rgba(0, 0, 0, 0.75);
         --input-text: #FFFFFF;
         --orb-color: rgba(255, 107, 26, 0.55);
@@ -135,8 +136,7 @@ st.markdown(f"""
     <style>
     {theme_css}
     
-    /* 1. AGGRESSIVE TEXT COLOR ENFORCEMENT */
-    html, body, [class*="css"], .stMarkdown, .stMarkdown *, p, span, h1, h2, h3, h4, h5, h6, label, div {{
+    html, body, [class*="css"], .stMarkdown, p, span, h1, h2, h3, h4, label, div {{
         font-family: 'Plus Jakarta Sans', sans-serif !important;
     }}
 
@@ -148,41 +148,41 @@ st.markdown(f"""
 
     header {{ visibility: hidden; }}
 
-    /* 2. TOGGLE WIDGET LABEL FIX */
-    div[data-testid="stToggle"] label, 
-    div[data-testid="stToggle"] span, 
-    div[data-testid="stToggle"] p {{
+    /* FIX: ADMIN POPOVER BUTTON & TOGGLE TEXT IN LIGHT MODE */
+    div[data-testid="stPopover"] > button {{
+        background-color: var(--card-bg) !important;
         color: var(--text-color) !important;
+        border: 2px solid var(--text-color) !important;
         font-weight: 800 !important;
-        font-size: 0.95rem !important;
-        opacity: 1 !important;
-    }}
-
-    /* 3. TABS HEADERS VISIBILITY FIX */
-    button[data-baseweb="tab"] {{
-        background: transparent !important;
+        border-radius: 8px !important;
     }}
     
-    button[data-baseweb="tab"] * {{
+    div[data-testid="stToggle"] label, div[data-testid="stToggle"] p {{
+        color: var(--text-color) !important;
+        font-weight: 800 !important;
+    }}
+
+    /* FIX: TABS HEADERS TO BE SOLID BLACK IN LIGHT MODE */
+    button[data-baseweb="tab"] p {{
         font-family: 'Space Grotesk', sans-serif !important;
         font-weight: 800 !important;
         font-size: 1.15rem !important;
         letter-spacing: 0.05em !important;
         text-transform: uppercase !important;
         color: var(--text-color) !important;
+        opacity: 0.6 !important;
+    }}
+
+    button[data-baseweb="tab"][aria-selected="true"] p {{
+        color: #FF6B1A !important;
         opacity: 1 !important;
     }}
-
-    button[data-baseweb="tab"][aria-selected="true"] * {{
-        color: #FF6B1A !important;
-    }}
-
     div[data-baseweb="tab-highlight"] {{
         background-color: #FF6B1A !important;
         height: 3px !important;
     }}
 
-    /* 4. HERO BANNER */
+    /* HERO BANNER */
     .hero-banner-container {{
         position: relative;
         width: 100%;
@@ -237,7 +237,7 @@ st.markdown(f"""
         text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }}
 
-    /* 5. INPUT TEXT AREA & BUTTON */
+    /* FIX: STRICT Z-INDEX TO KEEP ANIMATIONS BEHIND DATAFRAMES & CONTENT */
     .main .block-container {{
         max-width: 950px;
         padding-top: 1rem !important;
@@ -246,6 +246,16 @@ st.markdown(f"""
         margin: 0 auto;
     }}
 
+    div[data-testid="stVerticalBlock"], 
+    div[data-testid="stDataFrame"], 
+    .stDataFrame,
+    .stTextArea, 
+    .stButton {{
+        position: relative !important;
+        z-index: 999 !important;
+    }}
+
+    /* INPUT TEXT AREA & BUTTON */
     .stTextArea label {{ display: none; }}
     .stTextArea textarea {{
         background-color: var(--input-bg) !important;
@@ -286,7 +296,7 @@ st.markdown(f"""
         opacity: 0.9;
     }}
 
-    /* 6. METRIC CARDS & CHART CONTAINERS */
+    /* METRIC CARDS & CHART CONTAINERS */
     .glass-card {{
         background: var(--card-bg);
         border: 2px solid var(--border-color);
@@ -317,7 +327,7 @@ st.markdown(f"""
         box-shadow: var(--card-shadow);
     }}
 
-    /* 7. BACKGROUND STREAM EFFECT */
+    /* BACKGROUND STREAM EFFECT */
     .bg-streams {{
         position: fixed;
         bottom: 0; left: 0; right: 0;
@@ -338,7 +348,7 @@ st.markdown(f"""
         z-index: 0 !important;
     }}
 
-    /* 8. SIDE-DRIFTING ANIMATIONS */
+    /* FIX: SIDE-DRIFTING ANIMATIONS LOCKED TO BACKGROUND Z-INDEX 1 */
     .space-container {{
         position: fixed;
         top: 0; left: 0;
@@ -380,29 +390,22 @@ st.markdown(f"""
     .fc-6 {{ top: 82%; right: 3%; animation-duration: 21s; animation-delay: 11s; }}
 
     .tag-real {{
-        color: #10B981;
-        border: 1px solid rgba(16, 185, 129, 0.6);
-        background: rgba(16, 185, 129, 0.12);
-        padding: 1px 4px;
-        border-radius: 3px;
-        margin-left: 6px;
-        font-size: 0.65rem;
+        color: #10B981; border: 1px solid rgba(16, 185, 129, 0.6);
+        background: rgba(16, 185, 129, 0.12); padding: 1px 4px;
+        border-radius: 3px; margin-left: 6px; font-size: 0.65rem;
     }}
     
     .tag-fake {{
-        color: #EF4444;
-        border: 1px solid rgba(239, 68, 68, 0.6);
-        background: rgba(239, 68, 68, 0.12);
-        padding: 1px 4px;
-        border-radius: 3px;
-        margin-left: 6px;
-        font-size: 0.65rem;
+        color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.6);
+        background: rgba(239, 68, 68, 0.12); padding: 1px 4px;
+        border-radius: 3px; margin-left: 6px; font-size: 0.65rem;
     }}
     </style>
 
     <div class="bg-streams"></div>
     <div class="bg-orb"></div>
     
+    <!-- Floating Animation Elements locked to background -->
     <div class="space-container">
         <div class="floating-card fc-1">FEDERAL RESERVE SIGNALS RATE CUTS <span class="tag-real">REAL</span></div>
         <div class="floating-card fc-2">G20 DRAFTS JOINT SUPPLY CHAIN RESOLUTION <span class="tag-real">REAL</span></div>
@@ -412,6 +415,7 @@ st.markdown(f"""
         <div class="floating-card fc-6">ELECTION COMMISSION THROWS OUT 500K BALLOTS <span class="tag-fake">FAKE</span></div>
     </div>
 
+    <!-- HERO BANNER -->
     <div class="hero-banner-container">
         <div class="hero-banner-text">FAKE NEWS DETECTOR</div>
         <div class="hero-banner-subtitle">Automated Fact-Checking & Misinformation Detection Engine</div>
