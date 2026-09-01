@@ -90,7 +90,7 @@ with col_admin:
 chart_font_color = "#FFFFFF"
 chart_sub_color = "#94A3B8"
 
-# --- GLOBAL STYLING INJECTION (NO F-STRING TO PREVENT RENDER ERRORS) ---
+# --- GLOBAL STYLING INJECTION ---
 st.markdown("""
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -110,7 +110,13 @@ st.markdown("""
         --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
     }
     
-    /* Targeted font replacement so it doesn't break Streamlit Icons */
+    /* HIDE ALL STREAMLIT BRANDING */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    .stDeployButton {display: none;}
+    
+    /* Targeted font replacement */
     html, body, .stMarkdown, p, h1, h2, h3, h4, h5, h6, label {
         font-family: 'Plus Jakarta Sans', sans-serif !important;
     }
@@ -120,8 +126,6 @@ st.markdown("""
         color: var(--text-color) !important;
         overflow-x: hidden;
     }
-
-    header { visibility: hidden; }
 
     /* ADMIN POPOVER BUTTON */
     div[data-testid="stPopover"] > button {
