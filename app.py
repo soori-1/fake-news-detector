@@ -69,12 +69,8 @@ def scrape_url(url):
 if 'admin_auth' not in st.session_state:
     st.session_state.admin_auth = False
 
-# --- TOP CONTROLS (LIGHT/DARK MODE & ADMIN) ---
-# Properly placed in standard columns at the top right so they don't break layout
-col_spacer, col_theme, col_admin = st.columns([7.5, 1.5, 1.5])
-
-with col_theme:
-    light_mode = st.toggle("Light Mode")
+# --- TOP CONTROLS (ADMIN ONLY) ---
+col_spacer, col_admin = st.columns([8.5, 1.5])
 
 with col_admin:
     with st.popover("Admin Login"):
@@ -91,41 +87,23 @@ with col_admin:
             elif pwd != "":
                 st.error("Incorrect Password")
 
-# --- DYNAMIC THEME CSS DEFINITIONS ---
-if light_mode:
-    theme_css = """
-    :root {
-        --bg-color: #F8FAFC;
-        --text-color: #000000;
-        --sub-text: #000000;
-        --card-bg: #FFFFFF;
-        --border-color: #000000;
-        --input-bg: #FFFFFF;
-        --input-text: #000000;
-        --orb-color: rgba(255, 107, 26, 0.45);
-        --stream-color: rgba(255, 107, 26, 0.75);
-        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    """
-    chart_font_color = "#000000"
-    chart_sub_color = "#000000"
-else:
-    theme_css = """
-    :root {
-        --bg-color: #050505;
-        --text-color: #FFFFFF;
-        --sub-text: #94A3B8;
-        --card-bg: rgba(15, 15, 18, 0.85);
-        --border-color: rgba(255, 255, 255, 0.2);
-        --input-bg: rgba(0, 0, 0, 0.75);
-        --input-text: #FFFFFF;
-        --orb-color: rgba(255, 107, 26, 0.55);
-        --stream-color: rgba(255, 107, 26, 0.85);
-        --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
-    }
-    """
-    chart_font_color = "#FFFFFF"
-    chart_sub_color = "#94A3B8"
+# --- DARK THEME CSS ---
+theme_css = """
+:root {
+    --bg-color: #050505;
+    --text-color: #FFFFFF;
+    --sub-text: #94A3B8;
+    --card-bg: rgba(15, 15, 18, 0.85);
+    --border-color: rgba(255, 255, 255, 0.2);
+    --input-bg: rgba(0, 0, 0, 0.75);
+    --input-text: #FFFFFF;
+    --orb-color: rgba(255, 107, 26, 0.55);
+    --stream-color: rgba(255, 107, 26, 0.85);
+    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+}
+"""
+chart_font_color = "#FFFFFF"
+chart_sub_color = "#94A3B8"
 
 # --- GLOBAL STYLING INJECTION ---
 st.markdown(f"""
@@ -136,7 +114,8 @@ st.markdown(f"""
     <style>
     {theme_css}
     
-    html, body, [class*="css"], .stMarkdown, p, span, h1, h2, h3, h4, label, div {{
+    /* FIX: Targeted font replacement so it doesn't break Streamlit Icons */
+    html, body, .stMarkdown, p, h1, h2, h3, h4, h5, h6, label {{
         font-family: 'Plus Jakarta Sans', sans-serif !important;
     }}
 
@@ -148,21 +127,17 @@ st.markdown(f"""
 
     header {{ visibility: hidden; }}
 
-    /* FIX: ADMIN POPOVER BUTTON & TOGGLE TEXT IN LIGHT MODE */
+    /* ADMIN POPOVER BUTTON */
     div[data-testid="stPopover"] > button {{
         background-color: var(--card-bg) !important;
         color: var(--text-color) !important;
-        border: 2px solid var(--text-color) !important;
-        font-weight: 800 !important;
+        border: 1px solid var(--border-color) !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-weight: 700 !important;
         border-radius: 8px !important;
     }}
-    
-    div[data-testid="stToggle"] label, div[data-testid="stToggle"] p {{
-        color: var(--text-color) !important;
-        font-weight: 800 !important;
-    }}
 
-    /* FIX: TABS HEADERS TO BE SOLID BLACK IN LIGHT MODE */
+    /* TABS HEADERS */
     button[data-baseweb="tab"] p {{
         font-family: 'Space Grotesk', sans-serif !important;
         font-weight: 800 !important;
@@ -237,7 +212,7 @@ st.markdown(f"""
         text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }}
 
-    /* FIX: STRICT Z-INDEX TO KEEP ANIMATIONS BEHIND DATAFRAMES & CONTENT */
+    /* UI LAYERING */
     .main .block-container {{
         max-width: 950px;
         padding-top: 1rem !important;
@@ -281,6 +256,7 @@ st.markdown(f"""
     .stButton > button {{
         background: var(--text-color) !important;
         color: var(--bg-color) !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-weight: 800 !important;
         font-size: 1.05rem !important;
         border: none !important;
@@ -348,7 +324,7 @@ st.markdown(f"""
         z-index: 0 !important;
     }}
 
-    /* FIX: SIDE-DRIFTING ANIMATIONS LOCKED TO BACKGROUND Z-INDEX 1 */
+    /* SIDE-DRIFTING ANIMATIONS LOCKED TO BACKGROUND Z-INDEX 1 */
     .space-container {{
         position: fixed;
         top: 0; left: 0;
@@ -531,7 +507,7 @@ with tab_verify:
                             gauge={
                                 'axis': {'range': [0, 100], 'tickwidth': 3, 'tickcolor': chart_font_color, 'tickfont': {'family': 'Plus Jakarta Sans, sans-serif', 'color': chart_font_color}},
                                 'bar': {'color': "#10B981" if is_real else "#EF4444"},
-                                'bgcolor': "rgba(0,0,0,0.05)" if light_mode else "rgba(255,255,255,0.05)", 'borderwidth': 0,
+                                'bgcolor': "rgba(255,255,255,0.05)", 'borderwidth': 0,
                                 'steps': [{'range': [0, 50], 'color': "rgba(239, 68, 68, 0.18)"}, {'range': [50, 100], 'color': "rgba(16, 185, 129, 0.18)"}],
                             }
                         ))
